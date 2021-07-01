@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
+import re
 
 cur = pd.read_csv("tr-vaccination.csv")
 df = pd.DataFrame()
@@ -112,6 +113,10 @@ temp.append("".join(filter(str.isdigit,elem[3].string))[1:])
 df["2.doz"] = temp
 
 temp = []
+temp.append(str(int(df.toplam) - int(df['1.doz']) - int(df['2.doz'])))
+df["3.doz"] = temp
+
+temp = []
 temp.append(elem[4].string.split("'")[1])
 df["date"] = temp
 
@@ -119,10 +124,11 @@ g_nodes = element.find_all("g")[1:]
 for node in g_nodes:
     city = node["data-adi"]
     temp = []
-    temp.append({"toplam": node["data-toplam"], "1.doz": node["data-birinci-doz"], "2.doz": node["data-ikinci-doz"]})
+    temp.append({"toplam": node["data-toplam"], "1.doz": node["data-birinci-doz"], 
+                 "2.doz": node["data-ikinci-doz"], 
+                 "3.doz": re.sub(r'(?<!^)(?=(\d{3})+$)', r'.', str(int(node["data-toplam"].replace(".","")) - int(node["data-birinci-doz"].replace(".","")) - int(node["data-ikinci-doz"].replace(".",""))))})
     df[city] = temp
 
-    
 cur = cur.append(df, ignore_index = True)    
 cur.to_csv("tr-vaccination.csv", sep = ",", encoding= "utf-8-sig", index = False)
 
