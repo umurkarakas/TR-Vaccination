@@ -1,3 +1,7 @@
+Data recording stopped on August 17, as the Health Ministry of Turkey stopped sharing daily vaccination numbers for each city.
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 A Python Script for Extracting Turkey Vaccination Numbers
 
 
